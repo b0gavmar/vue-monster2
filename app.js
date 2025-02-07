@@ -1,4 +1,4 @@
-const app = vue.createApp({
+const app = Vue.createApp({
   data() {
     playerHealth: 100;
     monsterHealth: 100;
