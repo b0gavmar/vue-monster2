@@ -1,52 +1,62 @@
 const app = Vue.createApp({
   data() {
-    playerHealth: 100;
-    monsterHealth: 100;
-    winner: null;
-    round: 0;
-    logs: [];
+    return {
+      monsterHealth: 100,
+      playerHealth: 100,
+      winner: null,
+      round: 0,
+      logs: [],
+    };
   },
   watch: {
-    playerHealth(value) {
-      if (value === 0) {
-        this.winner = "Monster won";
+    monsterHealth(value) {
+      if (value === 0 && this.playerHealth === 0) {
+        this.winner = "It's a draw!";
+      } else if (value === 0) {
+        this.winner = "Player won!";
       }
     },
-    monsterHealth(value) {
-      if (value === 0 && this.playerHealth.value === 0) {
-        this.winner = "Its a draw";
+    playerHealth(value) {
+      if (value === 0) {
+        this.winner = "Monster won!";
       }
     },
   },
   methods: {
     playerAttack() {
-      const attack = this.getRandomNumber(5, 12);
-      this.monsterHealth = Math.max(monsterHealth-attack,0);
+      this.round = ++this.round % 3;
+      const attack = getRandomNumber(5, 12);
+      this.monsterHealth = Math.max(this.monsterHealth - attack, 0);
+      this.logs.unshift(`Player attack -${attack}`);
       this.monsterAttack();
     },
     monsterAttack() {
-      const attack = this.getRandomNumber(8, 12);
-      this.monsterHealth = Math.max(playerHealth-attack,0);
+      const attack = getRandomNumber(8, 12);
+      this.playerHealth = Math.max(this.playerHealth - attack, 0);
+      this.logs.unshift(`Monster attack -${attack}`);
     },
     specialAttack() {
-      const attack = this.getRandomNumber(10, 25);
-      this.monsterHealth = Math.max(monsterHealth-attack,0);
+      this.round = ++this.round % 3;
+      const attack = getRandomNumber(10, 25);
+      this.monsterHealth = Math.max(this.monsterHealth - attack, 0);
+      this.logs.unshift(`Player special attack -${attack}`);
       this.monsterAttack();
     },
-    playerHeal() {
-      const healValue = this.getRandomNumber(8, 20);
-      this.playerHealth = Math.min(playerHealth+healValue,100);
+    heal() {
+      this.round = ++this.round % 3;
+      const healValue = getRandomNumber(8, 20);
+      this.playerHealth = Math.min(this.playerHealth + healValue, 100);
+      this.logs.unshift(`Player heal -${healValue}`);
       this.monsterAttack();
     },
     surrender() {
-      this.winner = "Monster won";
+      this.winner = "Monder won!";
+      this.logs.unshift(`Player surrender`);
     },
     newGame() {
       this.monsterHealth = 100;
       this.playerHealth = 100;
       this.winner = null;
-      this.logs = [];
-      this.round = 0;
     },
   },
 });
